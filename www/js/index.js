@@ -18,25 +18,36 @@
  */
 
 
-     var done = function() {alert('done')}
+     var done = function() {
+
+     }
+
+     var checkPermission = function(hasPermission) {
+        if(!hasPermission) {
+            window.plugins.speechRecognition.requestPermission(done,failed)
+            }
+     }
 
      var getVoice = function(msg)
     {
-    $('#msg').val(msg.toString())
-    console.debug(msg)
+	    $('#msg').val(msg.toString())
+	    console.debug(msg)
     }
 
      var failed = function() {}
 
      let options = {
         language: 'en-US',
-        showPartial: true
+        showPartial: true,
+        showPopup: true
+
     }
 
 
 
     $(function() {
         $(document.body).on('click tap', '#end', function() {
+            $('#msg').append('stop capture\n')
             console.debug('end')
             window.plugins.speechRecognition.stopListening()
         } )
@@ -44,8 +55,9 @@
         $(document.body).on('click tap', '#start', function() {
             console.debug('start')
 			//window.plugins.speechRecognition.getSupportedLanguages(getVoice, failed)
-			window.plugins.speechRecognition.requestPermission(done,failed)
-			window.plugins.speechRecognition.hasPermission(getVoice,failed)
+			$('#msg').append('Start capture\n')
+			window.plugins.speechRecognition.hasPermission(checkPermission,failed)
+
 			window.plugins.speechRecognition.startListening(getVoice, failed, options)
         } )
     })
